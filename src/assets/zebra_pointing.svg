@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 550" width="100%" height="100%">
+  <g filter="drop-shadow(0px 10px 15px rgba(0,0,0,0.15))">
+    <!-- Ground Shadow -->
+    <ellipse cx="200" cy="510" rx="90" ry="10" fill="#000000" opacity="0.15" />
+
+    <!-- Legs & Sneakers (Standing Pose) -->
+    <path d="M 160,330 L 165,470 L 195,470 L 185,330 Z" fill="#1E242B" />
+    <path d="M 215,330 L 210,470 L 240,470 L 235,330 Z" fill="#28303B" />
+    <!-- Socks -->
+    <rect x="162" y="465" width="30" height="12" fill="#F8FAFC" rx="2" />
+    <rect x="210" y="465" width="30" height="12" fill="#F8FAFC" rx="2" />
+    <!-- Sneakers -->
+    <path d="M 145,475 C 145,465 170,465 195,475 C 198,488 185,495 155,495 C 145,495 145,485 145,475 Z" fill="#0F1216" />
+    <path d="M 205,475 C 205,465 230,465 255,475 C 258,488 245,495 215,495 C 205,495 205,485 205,475 Z" fill="#0F1216" />
+
+    <!-- Torso (Tracksuit Jacket & White Tee) -->
+    <path d="M 150,180 Q 200,200 250,180 L 255,335 L 145,335 Z" fill="#F8FAFC" />
+    <path d="M 130,175 C 120,230 130,290 160,330 L 185,330 L 165,185 Z" fill="#18202A" />
+    <path d="M 270,175 C 280,230 270,290 240,330 L 215,330 L 235,185 Z" fill="#18202A" />
+
+    <!-- White Stripes on Shoulders -->
+    <path d="M 135,185 Q 150,210 160,235 L 150,240 Q 140,215 128,190 Z" fill="#F8FAFC" />
+    <path d="M 265,185 Q 250,210 240,235 L 250,240 Q 260,215 272,190 Z" fill="#F8FAFC" />
+
+    <!-- Left Arm -->
+    <path d="M 130,180 Q 100,220 95,270 L 115,275 Q 125,230 150,195 Z" fill="#18202A" />
+    <!-- Left Hand -->
+    <circle cx="95" cy="285" r="14" fill="#2D3748" />
+
+    <!-- Right Arm (Raised Pointing Hand) -->
+    <path d="M 265,180 Q 300,210 325,215 L 320,235 Q 290,225 250,195 Z" fill="#18202A" />
+    <!-- Pointing Finger Hand -->
+    <g transform="translate(320, 205) rotate(-10)">
+      <path d="M 0,5 C 5,-5 25,-5 28,8 C 28,18 15,22 0,18 Z" fill="#2D3748" />
+      <path d="M 22,-2 C 32,-4 55,-2 58,4 C 58,10 38,11 25,8 Z" fill="#2D3748" />
+      <circle cx="62" cy="4" r="5" fill="#38BDF8" opacity="0.8" />
+    </g>
+
+    <!-- Zebra Head -->
+    <path d="M 175,170 L 225,170 L 220,130 L 180,130 Z" fill="#F8FAFC" />
+    <path d="M 170,135 C 180,105 195,80 215,60 C 235,40 260,45 270,65 C 280,85 260,120 225,145 Z" fill="#F8FAFC" stroke="#0F1216" stroke-width="3" />
+    <path d="M 245,58 C 257,52 273,58 277,75 C 280,88 265,102 250,104 C 240,90 237,70 245,58 Z" fill="#15181C" />
+
+    <!-- Stripes -->
+    <g fill="#0F1216">
+      <path d="M 195,115 C 210,98 225,85 237,72 L 240,77 C 228,90 214,103 199,120 Z" />
+      <path d="M 187,128 C 202,111 217,98 230,86 L 233,91 C 220,103 205,117 191,133 Z" />
+    </g>
+
+    <!-- Eye -->
+    <ellipse cx="231" cy="78" rx="6" ry="4.5" fill="#0F1216" />
+    <circle cx="232" cy="77" r="2" fill="#FFFFFF" />
+
+    <!-- Ears & Mane -->
+    <path d="M 190,60 C 185,38 197,20 205,26 C 209,38 201,55 194,62 Z" fill="#F8FAFC" stroke="#0F1216" stroke-width="2" />
+    <path d="M 170,140 L 177,125 L 187,105 L 197,85 L 207,65 L 217,45 L 223,35 L 215,42 L 205,60 L 195,80 L 185,100 L 175,120 Z" fill="#0F1216" />
+
+  </g>
+</svg>

@@ -1,0 +1,383 @@
+export const products = [
+  {
+    id: 1,
+    name: "Netflix Premium 4K",
+    category: "streaming",
+    categoryName: "Streaming",
+    slug: "netflix-premium-4k",
+    duration: "1 ay",
+    durations: [
+      { label: "1 ay", price: 14.99, oldPrice: 19.99 },
+      { label: "3 ay", price: 39.99, oldPrice: 54.99 },
+      { label: "1 il", price: 129.99, oldPrice: 189.99 }
+    ],
+    price: 14.99,
+    oldPrice: 19.99,
+    discount: "-25%",
+    rating: 4.9,
+    ratingCount: 342,
+    badge: "Ən Populyar",
+    isPopular: true,
+    isNew: false,
+    stock: 48,
+    instantDelivery: true,
+    image: "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80&w=600&auto=format&fit=crop",
+    shortDescription: " Ultra HD 4K keyfiyyətində filmlər və seriallar. Şəxsi profil və PİN kod mühafizəsi.",
+    fullDescription: "Netflix Premium abunəliyi ilə bütün dünyaca məşhur film və serialları ən yüksək 4K Ultra HD keyfiyyətində izləyin. Abunəlik tam rəsmi şəkildə aktivləşdirilir, şəxsi profiliniz və PİN kodunuz olur.",
+    features: [
+      "Ultra HD (4K) və HDR dəstəyi",
+      "Eyni anda 4 cihazda izləmə imkanı",
+      "Oflayn izləmə üçün yükləmə dəstəyi",
+      "Azərbaycan və Türk altyazı dəstəyi",
+      "Bütün smartfon, TV və kompüterlərdə işləyir",
+      "7/24 Avtomatik təhvil verilmə"
+    ]
+  },
+  {
+    id: 2,
+    name: "Spotify Premium",
+    category: "streaming",
+    categoryName: "Streaming",
+    slug: "spotify-premium",
+    duration: "3 ay",
+    durations: [
+      { label: "1 ay", price: 6.99, oldPrice: 9.99 },
+      { label: "3 ay", price: 17.99, oldPrice: 24.99 },
+      { label: "1 il", price: 54.99, oldPrice: 79.99 }
+    ],
+    price: 17.99,
+    oldPrice: 24.99,
+    discount: "-28%",
+    rating: 4.95,
+    ratingCount: 512,
+    badge: "Çox Satılan",
+    isPopular: true,
+    isNew: false,
+    stock: 120,
+    instantDelivery: true,
+    image: "https://images.unsplash.com/photo-1614680376593-902f749f7edc?q=80&w=600&auto=format&fit=crop",
+    shortDescription: "Reklamsız musiqi, oflayn dinləmə və yüksək səs keyfiyyəti şəxsi hesabınızda.",
+    fullDescription: "Milyonlarla mahnı və podkastı reklamsız dinləyin. Öz şəxsi Spotify hesabınıza rəsmi Premium abunəlik əlavə olunur. Bütün pleylistləriniz olduğu kimi qalır.",
+    features: [
+      "Tamamilə reklamsız musiqi həzzı",
+      "Mahnıları yükləyib internet olmadan dinləmə",
+      "320kbps Yüksək Səs Keyfiyyəti",
+      "Mahnı sətirlərini sinxron izləmə",
+      "Şəxsi hesabınız üzərindən aktivasiya"
+    ]
+  },
+  {
+    id: 3,
+    name: "ChatGPT Plus (GPT-4o)",
+    category: "suniki-intellekt",
+    categoryName: "Süni İntellekt",
+    slug: "chatgpt-plus-gpt4o",
+    duration: "1 ay",
+    durations: [
+      { label: "1 ay", price: 29.99, oldPrice: 39.99 },
+      { label: "3 ay", price: 79.99, oldPrice: 109.99 }
+    ],
+    price: 29.99,
+    oldPrice: 39.99,
+    discount: "-25%",
+    rating: 4.98,
+    ratingCount: 689,
+    badge: "VIP AI",
+    isPopular: true,
+    isNew: false,
+    stock: 35,
+    instantDelivery: true,
+    image: "https://images.unsplash.com/photo-1677442136019-21780efad99a?q=80&w=600&auto=format&fit=crop",
+    shortDescription: "GPT-4o, DALL-E 3 şəkil yaratma və sürətli cavab alma imkanı.",
+    fullDescription: "Dünyanın ən təkmil süni intellekt modeli ChatGPT Plus ilə işinizi, təhsilinizi və kodlaşdırmanızı 10x sürətləndirin. Şəxsi hesab və ya hazır giriş məlumatı ilə ani təhvil.",
+    features: [
+      "Ən yeni GPT-4o və O1 modellərinə giriş",
+      "DALL-E 3 ilə ultra-realist şəkillər yaratma",
+      "Fayl və sənəd analizi (PDF, Excel, Python)",
+      "Pik saatlarda belə ən yüksək sürət",
+      "Öz xüsusi GPT-lərinizi yaratmaq imkanı"
+    ]
+  },
+  {
+    id: 4,
+    name: "YouTube Premium",
+    category: "streaming",
+    categoryName: "Streaming",
+    slug: "youtube-premium",
+    duration: "1 il",
+    durations: [
+      { label: "6 ay", price: 24.99, oldPrice: 34.99 },
+      { label: "1 il", price: 39.99, oldPrice: 59.99 }
+    ],
+    price: 39.99,
+    oldPrice: 59.99,
+    discount: "-33%",
+    rating: 4.88,
+    ratingCount: 290,
+    badge: "Tövsiyə Olunur",
+    isPopular: false,
+    isNew: false,
+    stock: 80,
+    instantDelivery: true,
+    image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=600&auto=format&fit=crop",
+    shortDescription: "YouTube və YouTube Music reklamsız, arxa fonda oxutma imkanı ilə.",
+    fullDescription: "Videolara reklamsız baxın, ekranı bağladıqda belə audio oxutmağa davam edin. YouTube Music Premium pulsuz daxildir.",
+    features: [
+      "Sıfır reklam, kəsilməz video həzzı",
+      "Fon rejimində oxutma (Background play)",
+      "Videoları oflayn baxmaq üçün endirmə",
+      "YouTube Music Premium paketə daxildir",
+      "Tam öz Gmail hesabınıza dəvət linki"
+    ]
+  },
+  {
+    id: 5,
+    name: "Canva Pro",
+    category: "mhsuldarliq",
+    categoryName: "Məhsuldarlıq",
+    slug: "canva-pro",
+    duration: "1 il",
+    durations: [
+      { label: "6 ay", price: 14.99, oldPrice: 24.99 },
+      { label: "1 il", price: 24.99, oldPrice: 45.99 }
+    ],
+    price: 24.99,
+    oldPrice: 45.99,
+    discount: "-45%",
+    rating: 4.92,
+    ratingCount: 410,
+    badge: "Sərfəli",
+    isPopular: true,
+    isNew: false,
+    stock: 200,
+    instantDelivery: true,
+    image: "https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=600&auto=format&fit=crop",
+    shortDescription: "100M+ stok foto, premium şablonlar və fon silmə AI funksiyaları.",
+    fullDescription: "Qrafik dizaynlarınızı peşəkar səviyyəyə qaldırın. Canva Pro hesabınızla bütün premium elementlər, videolar, şriftlər və Magic Studio AI alətləri aktivləşir.",
+    features: [
+      "Bütün premium şablon və dizayn elementləri",
+      "Magic Switch və Tek-kliklə fon silmə",
+      "100GB Bulud saxlancları",
+      "Sosial media üçün planlaşdırma aləti",
+      "Şəxsi e-poçtunuza dəvət vasitəsilə aktivasiya"
+    ]
+  },
+  {
+    id: 6,
+    name: "Midjourney Pro AI",
+    category: "suniki-intellekt",
+    categoryName: "Süni İntellekt",
+    slug: "midjourney-pro-ai",
+    duration: "1 ay",
+    durations: [
+      { label: "1 ay", price: 34.99, oldPrice: 49.99 }
+    ],
+    price: 34.99,
+    oldPrice: 49.99,
+    discount: "-30%",
+    rating: 4.97,
+    ratingCount: 184,
+    badge: "Ultra AI",
+    isPopular: false,
+    isNew: true,
+    stock: 15,
+    instantDelivery: true,
+    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop",
+    shortDescription: "V6.1 modelində limitsiz yüksək dəqiqlikli rəqəmsal incəsənət generasiyası.",
+    fullDescription: "Fotorealistik visuals, 3D renderlər və concept art yaratmaq üçün ən güclü AI aləti Midjourney Pro. Gizli (Relax mode) sınırsız şəkil generasiyası daxildir.",
+    features: [
+      "Limitsiz Relax GPU saatları",
+      "15 Saat Fast GPU generasiyası",
+      "Məxfilik rejimi (Stealth Mode)",
+      "Web brauzer və Discord inteqrasiyası",
+      "Ticari istifadə hüququ (Commercial Terms)"
+    ]
+  },
+  {
+    id: 7,
+    name: "Windows 11 Pro Lisenziya",
+    category: "proqram-tminati",
+    categoryName: "Proqram Təminatı",
+    slug: "windows-11-pro-license",
+    duration: "Ömürlük",
+    durations: [
+      { label: "Ömürlük Lisenziya", price: 19.99, oldPrice: 69.99 }
+    ],
+    price: 19.99,
+    oldPrice: 69.99,
+    discount: "-71%",
+    rating: 4.89,
+    ratingCount: 310,
+    badge: "Ömürlük",
+    isPopular: false,
+    isNew: false,
+    stock: 95,
+    instantDelivery: true,
+    image: "https://images.unsplash.com/photo-1629654297299-c8506221ca97?q=80&w=600&auto=format&fit=crop",
+    shortDescription: "Orijinal Microsoft rəqəmsal aktivasiya açarı (Retail Key).",
+    fullDescription: "Windows 11 Pro üçün ömürlük rəsmi lisenziya açarı. Microsoft serverlərində dərhal aktivləşir, güncəlləmələri tam alır.",
+    features: [
+      "Orijinal Microsoft Retail Açar",
+      "BitLocker disk şifrələməsi dəstəyi",
+      "Bütün rəsmi yenilənmələrin alınması",
+      "32/64 bit bütün dillərdə işləyir",
+      "Ömürlük zəmanət və istifadə"
+    ]
+  },
+  {
+    id: 8,
+    name: "Microsoft 365 + 1TB OneDrive",
+    category: "mhsuldarliq",
+    categoryName: "Məhsuldarlıq",
+    slug: "microsoft-365-onedrive",
+    duration: "1 il",
+    durations: [
+      { label: "1 il", price: 29.99, oldPrice: 59.99 }
+    ],
+    price: 29.99,
+    oldPrice: 59.99,
+    discount: "-50%",
+    rating: 4.91,
+    ratingCount: 220,
+    badge: "Tövsiyə Olunur",
+    isPopular: false,
+    isNew: false,
+    stock: 60,
+    instantDelivery: true,
+    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=600&auto=format&fit=crop",
+    shortDescription: "Word, Excel, PowerPoint və 1000 GB təhlükəsiz bulud yaddaşı.",
+    fullDescription: "İşiniz və təhsiliniz üçün Microsoft Office proqramları (Word, Excel, PowerPoint, Outlook) və 1TB OneDrive bulud saxlancları bir arada.",
+    features: [
+      "5 Müxtəlif cihazda eyni anda istifadə",
+      "1000 GB (1 TB) OneDrive Bulud Yaddaşı",
+      "Offline Office proqramları yükləmə",
+      "Windows, Mac, iOS və Android dəstəyi",
+      "Tam təhlükəsiz şəxsi giriş məlumatları"
+    ]
+  },
+  {
+    id: 9,
+    name: "Steam 50 USD Hədiyyə Kartı",
+    category: "oyun",
+    categoryName: "Oyun",
+    slug: "steam-50-usd-gift-card",
+    duration: "Dərhal",
+    durations: [
+      { label: "$20 Card", price: 38.99, oldPrice: 45.00 },
+      { label: "$50 Card", price: 89.99, oldPrice: 99.99 }
+    ],
+    price: 89.99,
+    oldPrice: 99.99,
+    discount: "-10%",
+    rating: 4.96,
+    ratingCount: 415,
+    badge: "Oyun Balansı",
+    isPopular: true,
+    isNew: false,
+    stock: 50,
+    instantDelivery: true,
+    image: "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?q=80&w=600&auto=format&fit=crop",
+    shortDescription: "Steam hesabınıza balansı artırmaq üçün rəsmi rəqəmsal kod.",
+    fullDescription: "Steam platformasında istənilən oyunu, skinləri və ya DLC-ləri almaq üçün rəsmi balans kodu. Anında çatdırılır.",
+    features: [
+      "Qlobal və ya Region seçimi",
+      "Steam Store-da anında aktivasiya",
+      "Bütün oyun və DLC satın almaları üçün",
+      "Son istifadə tarixi yoxdur",
+      "Kodu kopyala-yapışdır ilə rahat istifadə"
+    ]
+  },
+  {
+    id: 10,
+    name: "Discord Nitro (1 İl)",
+    category: "oyun",
+    categoryName: "Oyun",
+    slug: "discord-nitro-1-year",
+    duration: "1 il",
+    durations: [
+      { label: "1 il", price: 49.99, oldPrice: 79.99 }
+    ],
+    price: 49.99,
+    oldPrice: 79.99,
+    discount: "-37%",
+    rating: 4.94,
+    ratingCount: 278,
+    badge: "Gamer Special",
+    isPopular: false,
+    isNew: true,
+    stock: 40,
+    instantDelivery: true,
+    image: "https://images.unsplash.com/photo-1614680376408-81e91ffe3db7?q=80&w=600&auto=format&fit=crop",
+    shortDescription: "2 Server Boost, HD 60fps strim, xüsusi emojilər və 500MB fayl limiti.",
+    fullDescription: "Discord icmasında fərqlənin! 2 Pulsuz Server Boost, xüsusi animasiyalı emojilər, profil mövzuları və HD yayım keyfiyyəti daxildir.",
+    features: [
+      "2 Pulsuz Server Boost",
+      "İstənilən serverdə custom emoji və stikerlər",
+      "1080p 60fps Yüksək Keyfiyyətli Strim",
+      "500 MB-a qədər fayl göndərmə limiti",
+      "Xüsusi profil avatarı və bannerləri"
+    ]
+  },
+  {
+    id: 11,
+    name: "Adobe Creative Cloud Bütün Apps",
+    category: "proqram-tminati",
+    categoryName: "Proqram Təminatı",
+    slug: "adobe-creative-cloud",
+    duration: "1 il",
+    durations: [
+      { label: "1 il", price: 149.99, oldPrice: 299.99 }
+    ],
+    price: 149.99,
+    oldPrice: 299.99,
+    discount: "-50%",
+    rating: 4.99,
+    ratingCount: 165,
+    badge: "Pro Choice",
+    isPopular: false,
+    isNew: false,
+    stock: 12,
+    instantDelivery: true,
+    image: "https://images.unsplash.com/photo-1600132806370-bf17e65e942f?q=80&w=600&auto=format&fit=crop",
+    shortDescription: "Photoshop, Premiere Pro, Illustrator, After Effects və bütöv Adobe dəsti.",
+    fullDescription: "20+ peşəkar Adobe proqramına rəsmi abunəlik. Generative Fill (Firefly AI) funksiyası ilə şəxsi hesabınız üzərindən istifadə edin.",
+    features: [
+      "Photoshop, Illustrator, Premiere Pro, After Effects",
+      "Adobe Firefly AI Generative Fill dəstəyi",
+      "100GB Bulud Saxlanc yeri",
+      "Adobe Fonts rəsmi kitabxanası",
+      "Mac və Windows üçün rəsmi yükləmə"
+    ]
+  },
+  {
+    id: 12,
+    name: "Gemini Advanced (Google AI)",
+    category: "suniki-intellekt",
+    categoryName: "Süni İntellekt",
+    slug: "gemini-advanced-google-ai",
+    duration: "1 ay",
+    durations: [
+      { label: "1 ay", price: 27.99, oldPrice: 35.99 }
+    ],
+    price: 27.99,
+    oldPrice: 35.99,
+    discount: "-22%",
+    rating: 4.87,
+    ratingCount: 142,
+    badge: "Yeni AI",
+    isPopular: false,
+    isNew: true,
+    stock: 25,
+    instantDelivery: true,
+    image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=600&auto=format&fit=crop",
+    shortDescription: "Google Ultra 1.0 modeli, 2TB Google One yaddaşı və Gmail AI inteqrasiyası.",
+    fullDescription: "Google-un ən bacarıqlı AI modeli Gemini Advanced ilə mətnlər yazın, kod tənzimləyin və Google Workspace daxilində AI gücündən istifadə edin.",
+    features: [
+      "Gemini 1.5 Pro və Ultra modelləri",
+      "2 TB Google One Bulud yaddaşı",
+      "Docs, Gmail və Drive inteqrasiyası",
+      "Kontekstli çoxmodallı təhlil",
+      "Öz Gmail hesabınızla istifadə"
+    ]
+  }
+];

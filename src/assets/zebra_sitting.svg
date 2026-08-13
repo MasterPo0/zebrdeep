@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <g filter="drop-shadow(0px 10px 15px rgba(0,0,0,0.15))" transform="translate(10, 10)">
+    
+    <!-- 1. Modern ZEBR Z-Bench with Stripes -->
+    <path d="M 60,350 L 180,350 L 100,450 L 220,450 C 240,450 250,430 250,420 L 140,420 L 220,320 L 80,320 C 65,320 60,335 60,350 Z" fill="#E2E8F0" stroke="#0F1216" stroke-width="4" />
+    <g fill="#0F1216">
+      <rect x="90" y="325" width="15" height="20" rx="3" />
+      <rect x="120" y="325" width="15" height="20" rx="3" />
+      <rect x="150" y="325" width="15" height="20" rx="3" />
+      <rect x="180" y="325" width="15" height="20" rx="3" />
+    </g>
+
+    <!-- Ground Shadow -->
+    <ellipse cx="250" cy="465" rx="180" ry="12" fill="#000000" opacity="0.15" />
+
+    <!-- 2. Sitting Zebra Mascot Body -->
+    <!-- Crossed Legs -->
+    <path d="M 180,320 C 180,370 230,400 300,390 L 320,410 L 260,425 L 170,350 Z" fill="#1E242B" />
+    <path d="M 220,320 C 240,350 280,355 310,345 L 340,365 L 290,380 L 200,340 Z" fill="#28303B" />
+    <!-- Sneaker Foot -->
+    <path d="M 310,395 C 310,385 340,385 365,395 C 368,408 355,415 325,415 C 315,415 310,405 310,395 Z" fill="#0F1216" />
+
+    <!-- Torso leaning slightly back -->
+    <path d="M 170,200 Q 210,220 250,200 L 245,330 L 165,330 Z" fill="#F8FAFC" />
+    <path d="M 150,195 C 140,240 150,290 175,330 L 195,330 L 180,200 Z" fill="#18202A" />
+    <path d="M 270,195 C 280,240 270,290 240,330 L 220,330 L 240,200 Z" fill="#18202A" />
+
+    <!-- Notebook / Tablet held in hands -->
+    <rect x="230" y="240" width="70" height="90" fill="#F8FAFC" stroke="#0F1216" stroke-width="3" rx="6" transform="rotate(15 230 240)" />
+    <line x1="245" y1="260" x2="285" y2="270" stroke="#0F1216" stroke-width="3" />
+    <line x1="242" y1="275" x2="280" y2="285" stroke="#0F1216" stroke-width="3" />
+    <line x1="239" y1="290" x2="275" y2="300" stroke="#0F1216" stroke-width="3" />
+
+    <!-- Gloved Hands holding tablet -->
+    <circle cx="230" cy="280" r="12" fill="#2D3748" />
+    <circle cx="280" cy="310" r="12" fill="#2D3748" />
+
+    <!-- Zebra Head looking forward -->
+    <path d="M 195,190 L 245,190 L 240,150 L 200,150 Z" fill="#F8FAFC" />
+    <path d="M 190,155 C 200,125 215,100 235,80 C 255,60 280,65 290,85 C 300,105 280,140 245,165 Z" fill="#F8FAFC" stroke="#0F1216" stroke-width="3" />
+    <path d="M 265,78 C 277,72 293,78 297,95 C 300,108 285,122 270,124 C 260,110 257,90 265,78 Z" fill="#15181C" />
+
+    <!-- Eye -->
+    <ellipse cx="251" cy="98" rx="6" ry="4.5" fill="#0F1216" />
+    <circle cx="252" cy="97" r="2" fill="#FFFFFF" />
+
+    <!-- Ears & Mane -->
+    <path d="M 210,80 C 205,58 217,40 225,46 C 229,58 221,75 214,82 Z" fill="#F8FAFC" stroke="#0F1216" stroke-width="2" />
+    <path d="M 190,160 L 197,145 L 207,125 L 217,105 L 227,85 L 237,65 L 243,55 L 235,62 L 225,80 L 215,100 L 205,120 L 195,140 Z" fill="#0F1216" />
+
+  </g>
+</svg>
