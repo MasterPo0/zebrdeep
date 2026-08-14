@@ -1,7 +1,7 @@
 import { products as initialProducts } from '../data/products';
 import { categories as initialCategories } from '../data/categories';
 
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = 'http://zebr-market-backend-main.railway.internal/';
 
 // In-memory mock storage synced for demo mode when backend is offline
 let mockProducts = [...initialProducts];
