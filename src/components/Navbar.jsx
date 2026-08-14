@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Menu, X, Sun, Moon, Coins, LogOut, LayoutDashboard, ChevronDown } from 'lucide-react';
+import { ShoppingBag, Menu, X, Sun, Moon, Coins, LogOut, LayoutDashboard, ChevronDown, Heart, ShieldCheck } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useWishlist } from '../context/WishlistContext';
 import { useScrollProgress } from '../hooks/useScrollProgress';
 
 export const Navbar = () => {
   const { isScrolled } = useScrollProgress();
   const { totalItemsCount, setIsCartOpen } = useCart();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { wishlistCount } = useWishlist();
+  const { user, isAuthenticated, logout, isAdmin } = useAuth();
   const { toggleTheme, isDark } = useTheme();
   
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -67,7 +69,7 @@ export const Navbar = () => {
         </nav>
 
         {/* RIGHT ACTIONS */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           
           {/* Dark / Light Theme Toggle Button */}
           <button
@@ -78,6 +80,21 @@ export const Navbar = () => {
           >
             {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
           </button>
+
+          {/* Wishlist Button */}
+          <Link
+            to="/wishlist"
+            className="relative p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:scale-105 active:scale-95 transition-all"
+            title="İstək siyahısı"
+            aria-label="İstək siyahısı"
+          >
+            <Heart className="w-4 h-4 text-rose-500" />
+            {wishlistCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white dark:border-[#0B0D10]">
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
 
           {/* Cart Icon Button */}
           <button
@@ -141,6 +158,17 @@ export const Navbar = () => {
                     <button
                       onClick={() => {
                         setUserDropdownOpen(false);
+                        navigate('/admin');
+                      }}
+                      className="w-full text-left p-2.5 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-950/40 text-purple-600 font-semibold flex items-center gap-2"
+                    >
+                      <ShieldCheck className="w-4 h-4 text-purple-500" />
+                      <span>Admin Panel (/admin)</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setUserDropdownOpen(false);
                         logout();
                         navigate('/');
                       }}
@@ -175,12 +203,109 @@ export const Navbar = () => {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300"
             aria-label="Menyu"
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
         </div>
       </div>
+
+      {/* Mobile Dropdown Menu Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="md:hidden overflow-hidden bg-white/95 dark:bg-[#0E1116]/95 border-b border-slate-200 dark:border-slate-800 backdrop-blur-xl"
+          >
+            <div className="max-w-7xl mx-auto px-4 py-4 space-y-3">
+              <nav className="flex flex-col space-y-1">
+                {navLinks.map((link) => (
+                  <NavLink
+                    key={link.path}
+                    to={link.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={({ isActive }) =>
+                      `px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+                        isActive
+                          ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-sm'
+                          : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                      }`
+                    }
+                  >
+                    {link.name}
+                  </NavLink>
+                ))}
+              </nav>
+
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
+                {isAuthenticated ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                      <div className="flex items-center gap-2.5">
+                        <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
+                        <div>
+                          <p className="text-xs font-bold text-slate-900 dark:text-white">{user.name}</p>
+                          <p className="text-[10px] text-slate-500">{user.email}</p>
+                        </div>
+                      </div>
+                      <span className="px-2 py-1 rounded bg-amber-500/20 text-amber-500 text-xs font-mono font-bold flex items-center gap-1">
+                        <Coins className="w-3.5 h-3.5" />
+                        {user.zebrCoins}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          navigate('/dashboard');
+                        }}
+                        className="w-full py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold flex items-center justify-center gap-1.5"
+                      >
+                        <LayoutDashboard className="w-4 h-4" />
+                        <span>Panel</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          logout();
+                          navigate('/');
+                        }}
+                        className="w-full py-2.5 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-600 text-xs font-bold flex items-center justify-center gap-1.5"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span>Çıxış</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link
+                      to="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="py-3 rounded-xl text-center text-xs font-bold bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800"
+                    >
+                      Giriş
+                    </Link>
+                    <Link
+                      to="/register"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="py-3 rounded-xl text-center text-xs font-bold bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-sm"
+                    >
+                      Qeydiyyat
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
+

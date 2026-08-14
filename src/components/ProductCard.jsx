@@ -1,12 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Star, ShoppingBag, Zap } from 'lucide-react';
+import { Star, ShoppingBag, Zap, Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import { formatCurrency } from '../utils/formatCurrency';
 
 export const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
+
+  const isLiked = isInWishlist(product.id);
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -54,6 +58,19 @@ export const ProductCard = ({ product }) => {
           <span className="absolute bottom-2.5 left-2.5 text-[10px] uppercase font-bold text-slate-800 dark:text-slate-200 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-2.5 py-0.5 rounded-md border border-slate-200 dark:border-slate-800">
             {product.categoryName}
           </span>
+
+          {/* Wishlist Heart Button */}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleWishlist(product);
+            }}
+            className="absolute bottom-2.5 right-2.5 p-2 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 backdrop-blur-md text-slate-600 dark:text-slate-300 hover:scale-110 active:scale-95 transition-all z-10"
+            title={isLiked ? "İstək siyahısından çıxar" : "İstək siyahısına əlavə et"}
+          >
+            <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-rose-500 text-rose-500' : ''}`} />
+          </button>
         </div>
 
         {/* Rating & Duration */}

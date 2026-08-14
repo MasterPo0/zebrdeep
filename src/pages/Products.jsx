@@ -13,7 +13,8 @@ export const Products = () => {
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
-      const matchesCategory = selectedCategory === 'all' || p.category === selectedCategory;
+      const matchedCat = categories.find(c => c.slug === selectedCategory || c.id === selectedCategory);
+      const matchesCategory = selectedCategory === 'all' || p.category === selectedCategory || (matchedCat && (p.category === matchedCat.id || p.category === matchedCat.slug));
       const matchesSearch =
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.shortDescription.toLowerCase().includes(searchTerm.toLowerCase());

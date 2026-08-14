@@ -207,7 +207,7 @@ export const ProductDetails = () => {
                 <label className="text-xs font-bold text-slate-500 block">
                   Müddət seçin:
                 </label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {product.durations.map((dur) => (
                     <button
                       key={dur.label}

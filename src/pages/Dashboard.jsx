@@ -6,14 +6,15 @@ import {
   Coins, 
   Check, 
   Copy,
-  Sparkles
+  Sparkles,
+  ShieldCheck
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { formatCurrency } from '../utils/formatCurrency';
 
 export const Dashboard = () => {
-  const { user, updateProfile } = useAuth();
+  const { user, updateProfile, toggleRole } = useAuth();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'orders', 'subscriptions', 'coins', 'settings'
@@ -64,11 +65,18 @@ export const Dashboard = () => {
             className="w-16 h-16 rounded-2xl object-cover border-2 border-slate-700 shrink-0"
           />
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-2xl font-black">{user.name}</h1>
               <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[11px] font-bold">
                 {user.tier}
               </span>
+              <button
+                onClick={toggleRole}
+                className="px-2.5 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-300 text-[11px] font-mono font-bold hover:bg-purple-500/40 transition-colors"
+                title="Rolu dəyişmək üçün klikləyin"
+              >
+                Rol: {user.role || 'ROLE_USER'} (Dəyiş)
+              </button>
             </div>
             <p className="text-slate-400 text-xs">{user.email}</p>
           </div>
@@ -76,6 +84,14 @@ export const Dashboard = () => {
 
         {/* ZEBR Mascot Badge & Quick Pill */}
         <div className="flex items-center gap-4 relative z-10">
+          <button
+            onClick={() => navigate('/admin')}
+            className="px-4 py-3 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-md transition-all flex items-center gap-2"
+          >
+            <ShieldCheck className="w-4 h-4" />
+            <span>Admin Panelə Keç</span>
+          </button>
+
           <div className="flex items-center gap-4 bg-slate-800/80 dark:bg-slate-900/80 border border-slate-700/60 p-3.5 rounded-2xl">
             <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
               <Coins className="w-5 h-5" />
@@ -403,3 +419,5 @@ export const Dashboard = () => {
     </div>
   );
 };
+
+export default Dashboard;

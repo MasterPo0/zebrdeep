@@ -20,7 +20,7 @@ import { zebrThumbsup, zebrPresenting } from '../assets/mascot';
 
 export const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, clearCart, subtotal } = useCart();
-  const { user, deductCoins } = useAuth();
+  const { user, deductCoins, addOrder } = useAuth();
   const navigate = useNavigate();
 
   const [promoCode, setPromoCode] = useState('');
@@ -63,16 +63,21 @@ export const Cart = () => {
 
     setIsSubmitting(true);
     try {
-      if (useZebrCoins && user?.zebrCoins) {
-        deductCoins(user.zebrCoins);
-      }
-      const res = await apiService.checkout({
-        items: cartItems,
+      const payload = {
+        items: [...cartItems],
         customer: formData,
         paymentMethod: selectedPayment,
         total: finalTotal
-      });
-      setOrderResult(res);
+      };
+      if (useZebrCoins && user?.zebrCoins) {
+        deductCoins(user.zebrCoins);
+      }
+      const res = await apiService.checkout(payload);
+      const fullResult = { ...res, ...payload };
+      if (addOrder) {
+        addOrder(fullResult);
+      }
+      setOrderResult(fullResult);
       clearCart();
     } catch (err) {
       alert("Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.");
@@ -116,7 +121,7 @@ export const Cart = () => {
             </div>
             <div className="flex justify-between">
               <span className="text-slate-500">Ödənilən Məbləğ:</span>
-              <span className="text-emerald-500 font-bold">{formatCurrency(finalTotal)}</span>
+              <span className="text-emerald-500 font-bold">{formatCurrency(orderResult.total)}</span>
             </div>
           </div>
 
@@ -328,7 +333,7 @@ export const Cart = () => {
                 <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">
                   Ödəniş Üsulu:
                 </label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setSelectedPayment('card')}

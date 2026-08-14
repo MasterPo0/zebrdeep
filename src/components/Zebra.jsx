@@ -159,9 +159,9 @@ export const Zebra = ({
     );
   }
 
-  // Floating & Scroll-Animated Mascot
+  // Floating & Scroll-Animated Mascot (Desktop Only to prevent mobile content block)
   return (
-    <div className="fixed inset-y-0 right-2 sm:right-6 md:right-10 pointer-events-none z-20 overflow-visible w-64 sm:w-76 md:w-96 select-none">
+    <div className="hidden lg:block fixed inset-y-0 right-4 xl:right-10 pointer-events-none z-20 overflow-visible w-72 lg:w-80 xl:w-96 select-none">
       <motion.div
         className="absolute top-20 w-full flex flex-col items-center"
         style={{

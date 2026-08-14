@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { WishlistProvider } from './context/WishlistContext';
 
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
@@ -23,6 +24,8 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Support } from './pages/Support';
 import { Dashboard } from './pages/Dashboard';
+import { Wishlist } from './pages/Wishlist';
+import { Admin } from './pages/Admin';
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -54,10 +57,12 @@ const AnimatedRoutes = () => {
           <Route path="/categories" element={<Categories />} />
           <Route path="/category/:slug" element={<Category />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/support" element={<Support />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </motion.div>
     </AnimatePresence>
@@ -69,20 +74,22 @@ export function App() {
     <ThemeProvider>
       <AuthProvider>
         <CartProvider>
-          <Router>
-            <div className="relative min-h-screen bg-[#FAFAFA] dark:bg-[#0B0D10] text-slate-900 dark:text-white transition-colors duration-300">
-              <ScrollToTop />
-              <BackgroundVisuals />
-              <CustomCursor />
-              <Navbar />
-              <CartDrawer />
-              <Toast />
-              <main className="relative z-10">
-                <AnimatedRoutes />
-              </main>
-              <Footer />
-            </div>
-          </Router>
+          <WishlistProvider>
+            <Router>
+              <div className="relative min-h-screen bg-[#FAFAFA] dark:bg-[#0B0D10] text-slate-900 dark:text-white transition-colors duration-300">
+                <ScrollToTop />
+                <BackgroundVisuals />
+                <CustomCursor />
+                <Navbar />
+                <CartDrawer />
+                <Toast />
+                <main className="relative z-10">
+                  <AnimatedRoutes />
+                </main>
+                <Footer />
+              </div>
+            </Router>
+          </WishlistProvider>
         </CartProvider>
       </AuthProvider>
     </ThemeProvider>
