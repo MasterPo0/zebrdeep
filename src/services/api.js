@@ -1,7 +1,7 @@
-import { products as initialProducts } from '../data/products';
+﻿import { products as initialProducts } from '../data/products';
 import { categories as initialCategories } from '../data/categories';
 
-const API_BASE_URL = 'https://zebr-market-backend-main-production.up.railway.app';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://backend-vauu-production.up.railway.app/api';
 
 // In-memory mock storage synced for demo mode when backend is offline
 let mockProducts = [...initialProducts];
@@ -14,7 +14,7 @@ let mockOrders = [
     totalAmount: 159.98,
     status: "COMPLETED",
     paymentMethod: "CREDIT_CARD",
-    customerName: "Elvin Məmmədov",
+    customerName: "Elvin MÉ™mmÉ™dov",
     customerEmail: "elvin@zebr.az",
     items: [
       {
@@ -68,8 +68,8 @@ let mockUsers = [
     id: 1,
     email: "elvin@zebr.az",
     firstName: "Elvin",
-    lastName: "Məmmədov",
-    fullName: "Elvin Məmmədov",
+    lastName: "MÉ™mmÉ™dov",
+    fullName: "Elvin MÉ™mmÉ™dov",
     phoneNumber: "+994501234567",
     avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop",
     role: "ROLE_USER",
@@ -136,7 +136,7 @@ export const apiService = {
       const newUser = {
         id: mockUsers.length + 1,
         email: data.email,
-        firstName: data.firstName || data.name?.split(' ')[0] || "İstifadəçi",
+        firstName: data.firstName || data.name?.split(' ')[0] || "Ä°stifadÉ™Ã§i",
         lastName: data.lastName || data.name?.split(' ')[1] || "ZEBR",
         fullName: data.name || `${data.firstName || ''} ${data.lastName || ''}`.trim(),
         avatarUrl: null,
@@ -166,8 +166,8 @@ export const apiService = {
         id: 1,
         email: credentials.email,
         firstName: "Elvin",
-        lastName: "Məmmədov",
-        fullName: "Elvin Məmmədov",
+        lastName: "MÉ™mmÉ™dov",
+        fullName: "Elvin MÉ™mmÉ™dov",
         avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop",
         role: credentials.email.includes('admin') ? "ROLE_ADMIN" : "ROLE_USER",
         roles: credentials.email.includes('admin') ? ["ROLE_ADMIN", "ROLE_USER"] : ["ROLE_USER"],
@@ -310,7 +310,7 @@ export const apiService = {
         oldPrice: productData.oldPrice ? Number(productData.oldPrice) : null,
         discount: productData.discount || null,
         category: productData.category || 'streaming',
-        categoryName: productData.categoryName || 'Rəqəmsal',
+        categoryName: productData.categoryName || 'RÉ™qÉ™msal',
         duration: productData.duration || '1 ay',
         rating: 5.0,
         ratingCount: 1,
@@ -473,7 +473,7 @@ export const apiService = {
         totalAmount: orderData.total,
         status: "PENDING",
         paymentMethod: orderData.paymentMethod || "CREDIT_CARD",
-        customerName: orderData.customer?.fullName || "Müştəri",
+        customerName: orderData.customer?.fullName || "MÃ¼ÅŸtÉ™ri",
         customerEmail: orderData.customer?.email || "user@example.com",
         items: (orderData.items || []).map((item, i) => ({
           id: i + 1,
@@ -620,3 +620,4 @@ export const apiService = {
 };
 
 export default apiService;
+
