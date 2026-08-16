@@ -1,11 +1,15 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://zebr-market-backend-production.up.railway.app/api/v1';
 
+<<<<<<< HEAD
 // Helper to normalize product response objects for UI compatibility
 function normalizeProduct(p) {
   if (!p) return null;
   const image = (p.images && p.images.length > 0 && p.images[0].imageUrl && p.images[0].imageUrl !== 'string')
     ? p.images[0].imageUrl
     : (p.image || 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=600&auto=format&fit=crop');
+=======
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://zebr-market-backend-production.up.railway.app/api/v1';
+>>>>>>> 7c5976914b1f7e85a108cb590d723896467c89bf
 
   const oldPrice = (p.discountPercentage > 0 && p.price > 0)
     ? p.price
