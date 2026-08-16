@@ -1,7 +1,7 @@
 ﻿import { products as initialProducts } from '../data/products';
 import { categories as initialCategories } from '../data/categories';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://backend-vauu-production.up.railway.app/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://zebr-market-backend-production.up.railway.app/api/v1';
 
 // In-memory mock storage synced for demo mode when backend is offline
 let mockProducts = [...initialProducts];
