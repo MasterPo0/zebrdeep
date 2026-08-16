@@ -13,15 +13,18 @@ export const WishlistProvider = ({ children }) => {
     localStorage.setItem('zebr_wishlist', JSON.stringify(wishlist));
   }, [wishlist]);
 
-  // Load wishlist from backend API on mount
+  // Load wishlist from backend API on mount if authenticated
   useEffect(() => {
-    apiService.getWishlist()
-      .then(res => {
-        if (res.data?.products && Array.isArray(res.data.products)) {
-          setWishlist(res.data.products);
-        }
-      })
-      .catch(() => {});
+    const token = localStorage.getItem('accessToken');
+    if (token && token !== 'undefined' && token !== 'null') {
+      apiService.getWishlist()
+        .then(res => {
+          if (res.data?.products && Array.isArray(res.data.products)) {
+            setWishlist(res.data.products);
+          }
+        })
+        .catch(() => {});
+    }
   }, []);
 
   const isInWishlist = (productId) => {

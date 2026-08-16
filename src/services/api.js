@@ -63,9 +63,13 @@ function normalizeCategory(c) {
 // Helper to make API requests with Authorization header
 async function request(endpoint, options = {}) {
   const token = localStorage.getItem('accessToken');
+  const method = (options.method || 'GET').toUpperCase();
+  const isGetOrDelete = method === 'GET' || (method === 'DELETE' && !options.body);
+
   const headers = {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    // Only send Content-Type for requests with body (POST, PUT) to avoid CORS preflights on GET
+    ...(!isGetOrDelete ? { 'Content-Type': 'application/json' } : {}),
+    ...(token && token !== 'undefined' && token !== 'null' ? { Authorization: `Bearer ${token}` } : {}),
     ...options.headers
   };
 
@@ -73,10 +77,14 @@ async function request(endpoint, options = {}) {
     ...options,
     headers
   });
-  
+
+  if (response.status === 204) {
+    return { success: true, data: null };
+  }
+
   const json = await response.json();
   if (!response.ok || json.success === false) {
-    throw new Error(json.message || 'API Request Failed');
+    throw new Error(json.message || `API Request Failed (${response.status})`);
   }
   return json;
 }
@@ -86,14 +94,22 @@ export const apiService = {
   async register(data) {
     return request('/auth/register', {
       method: 'POST',
-      body: JSON.stringify(data)
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+        firstName: data.firstName || data.name?.split(' ')[0] || 'İstifadəçi',
+        lastName: data.lastName || data.name?.split(' ')[1] || 'ZEBR'
+      })
     });
   },
 
   async login(credentials) {
     return request('/auth/login', {
       method: 'POST',
-      body: JSON.stringify(credentials)
+      body: JSON.stringify({
+        email: credentials.email,
+        password: credentials.password
+      })
     });
   },
 
@@ -106,20 +122,36 @@ export const apiService = {
 
   // 2. USER MODULE (/users)
   async getMe() {
-    return request('/users/me', { method: 'GET' });
+    const token = localStorage.getItem('accessToken');
+    if (!token || token === 'undefined' || token === 'null') {
+      return { success: false, data: null };
+    }
+    try {
+      return await request('/users/me', { method: 'GET' });
+    } catch (err) {
+      return { success: false, data: null };
+    }
   },
 
   async updateProfile(data) {
     return request('/users/me', {
       method: 'PUT',
-      body: JSON.stringify(data)
+      body: JSON.stringify({
+        firstName: data.firstName || '',
+        lastName: data.lastName || '',
+        avatarUrl: data.avatarUrl || '',
+        phoneNumber: data.phoneNumber || ''
+      })
     });
   },
 
   async changePassword(data) {
     return request('/users/me/change-password', {
       method: 'POST',
-      body: JSON.stringify(data)
+      body: JSON.stringify({
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword
+      })
     });
   },
 
@@ -130,7 +162,15 @@ export const apiService = {
   },
 
   async getAllUsersAdmin() {
-    return request('/users/admin/all', { method: 'GET' });
+    const token = localStorage.getItem('accessToken');
+    if (!token || token === 'undefined' || token === 'null') {
+      return { success: true, data: [] };
+    }
+    try {
+      return await request('/users/admin/all', { method: 'GET' });
+    } catch (err) {
+      return { success: true, data: [] };
+    }
   },
 
   // 3. PRODUCTS MODULE (/products)
@@ -169,18 +209,23 @@ export const apiService = {
   },
 
   async createProduct(productData) {
+    const imageUrls = productData.imageUrls
+      ? productData.imageUrls
+      : (productData.image ? [productData.image] : ['https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=600&auto=format&fit=crop']);
+
     const payload = {
-      title: productData.name || productData.title,
-      description: productData.shortDescription || productData.description || '',
-      price: Number(productData.price),
+      title: String(productData.name || productData.title || ''),
+      description: String(productData.shortDescription || productData.fullDescription || productData.description || ''),
+      price: Number(productData.price || 0),
       discountPercentage: (productData.oldPrice && Number(productData.oldPrice) > Number(productData.price))
         ? Math.round(((Number(productData.oldPrice) - Number(productData.price)) / Number(productData.oldPrice)) * 100)
-        : 0,
-      stockQuantity: Number(productData.stockQuantity || productData.stock || 10),
-      status: productData.status || 'ACTIVE',
-      categoryId: productData.categoryId ? Number(productData.categoryId) : undefined,
-      images: productData.image ? [{ imageUrl: productData.image, primary: true }] : []
+        : Number(productData.discountPercentage || 0),
+      stockQuantity: Number(productData.stockQuantity ?? productData.stock ?? 10),
+      categoryId: Number(productData.categoryId || 1),
+      status: String(productData.status || 'ACTIVE'),
+      imageUrls: imageUrls
     };
+
     const json = await request('/products', {
       method: 'POST',
       body: JSON.stringify(payload)
@@ -192,17 +237,23 @@ export const apiService = {
   },
 
   async updateProduct(id, productData) {
+    const imageUrls = productData.imageUrls
+      ? productData.imageUrls
+      : (productData.image ? [productData.image] : ['https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=600&auto=format&fit=crop']);
+
     const payload = {
-      title: productData.name || productData.title,
-      description: productData.shortDescription || productData.description || '',
-      price: Number(productData.price),
+      title: String(productData.name || productData.title || ''),
+      description: String(productData.shortDescription || productData.fullDescription || productData.description || ''),
+      price: Number(productData.price || 0),
       discountPercentage: (productData.oldPrice && Number(productData.oldPrice) > Number(productData.price))
         ? Math.round(((Number(productData.oldPrice) - Number(productData.price)) / Number(productData.oldPrice)) * 100)
-        : 0,
-      stockQuantity: Number(productData.stockQuantity || productData.stock || 10),
-      status: productData.status || 'ACTIVE',
-      categoryId: productData.categoryId ? Number(productData.categoryId) : undefined
+        : Number(productData.discountPercentage || 0),
+      stockQuantity: Number(productData.stockQuantity ?? productData.stock ?? 10),
+      categoryId: Number(productData.categoryId || 1),
+      status: String(productData.status || 'ACTIVE'),
+      imageUrls: imageUrls
     };
+
     const json = await request(`/products/${id}`, {
       method: 'PUT',
       body: JSON.stringify(payload)
@@ -254,10 +305,10 @@ export const apiService = {
 
   async createCategory(categoryData) {
     const payload = {
-      name: categoryData.name,
-      description: categoryData.description || '',
-      iconUrl: categoryData.icon || categoryData.iconUrl || 'Grid',
-      parentId: categoryData.parentId || null
+      name: String(categoryData.name || ''),
+      description: String(categoryData.description || ''),
+      iconUrl: String(categoryData.icon || categoryData.iconUrl || 'Grid'),
+      parentId: categoryData.parentId ? Number(categoryData.parentId) : null
     };
     const json = await request('/categories', {
       method: 'POST',
@@ -271,10 +322,10 @@ export const apiService = {
 
   async updateCategory(id, categoryData) {
     const payload = {
-      name: categoryData.name,
-      description: categoryData.description || '',
-      iconUrl: categoryData.icon || categoryData.iconUrl || 'Grid',
-      parentId: categoryData.parentId || null
+      name: String(categoryData.name || ''),
+      description: String(categoryData.description || ''),
+      iconUrl: String(categoryData.icon || categoryData.iconUrl || 'Grid'),
+      parentId: categoryData.parentId ? Number(categoryData.parentId) : null
     };
     const json = await request(`/categories/${id}`, {
       method: 'PUT',
@@ -292,13 +343,21 @@ export const apiService = {
 
   // 5. CART MODULE (/cart)
   async getCart() {
-    return request('/cart', { method: 'GET' });
+    const token = localStorage.getItem('accessToken');
+    if (!token || token === 'undefined' || token === 'null') {
+      return { success: true, data: { items: [], totalPrice: 0, totalItems: 0 } };
+    }
+    try {
+      return await request('/cart', { method: 'GET' });
+    } catch (err) {
+      return { success: true, data: { items: [], totalPrice: 0, totalItems: 0 } };
+    }
   },
 
   async addToCart(productId, quantity = 1) {
     return request('/cart', {
       method: 'POST',
-      body: JSON.stringify({ productId, quantity })
+      body: JSON.stringify({ productId: Number(productId), quantity: Number(quantity) })
     });
   },
 
@@ -322,12 +381,22 @@ export const apiService = {
   async checkout(orderData) {
     return request('/orders', {
       method: 'POST',
-      body: JSON.stringify(orderData)
+      body: JSON.stringify({
+        paymentMethod: orderData.paymentMethod || 'CREDIT_CARD'
+      })
     });
   },
 
   async getOrders(params = {}) {
-    return request('/orders', { method: 'GET' });
+    const token = localStorage.getItem('accessToken');
+    if (!token || token === 'undefined' || token === 'null') {
+      return { success: true, data: { content: [] } };
+    }
+    try {
+      return await request('/orders', { method: 'GET' });
+    } catch (err) {
+      return { success: true, data: { content: [] } };
+    }
   },
 
   async getOrderById(id) {
@@ -343,7 +412,15 @@ export const apiService = {
   },
 
   async getAllOrdersAdmin() {
-    return request('/orders/admin/all', { method: 'GET' });
+    const token = localStorage.getItem('accessToken');
+    if (!token || token === 'undefined' || token === 'null') {
+      return { success: true, data: { content: [] } };
+    }
+    try {
+      return await request('/orders/admin/all', { method: 'GET' });
+    } catch (err) {
+      return { success: true, data: { content: [] } };
+    }
   },
 
   async updateOrderStatusAdmin(id, status) {
@@ -354,7 +431,15 @@ export const apiService = {
 
   // 7. WISHLIST MODULE (/wishlist)
   async getWishlist() {
-    return request('/wishlist', { method: 'GET' });
+    const token = localStorage.getItem('accessToken');
+    if (!token || token === 'undefined' || token === 'null') {
+      return { success: true, data: { products: [], totalItems: 0 } };
+    }
+    try {
+      return await request('/wishlist', { method: 'GET' });
+    } catch (err) {
+      return { success: true, data: { products: [], totalItems: 0 } };
+    }
   },
 
   async addToWishlist(productId) {
