@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Zap, 
@@ -15,12 +15,31 @@ import { SectionTitle } from '../components/SectionTitle';
 import { ProductCard } from '../components/ProductCard';
 import { CategoryCard } from '../components/CategoryCard';
 import { ScrollReveal } from '../components/ScrollReveal';
-import { products } from '../data/products';
-import { categories } from '../data/categories';
+import { apiService } from '../services/api';
 import { zebrPhone, zebrThumbsup } from '../assets/mascot';
 
 export const Home = () => {
   const [selectedFilter, setSelectedFilter] = useState('all');
+  const [productsList, setProductsList] = useState([]);
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      apiService.getProducts({ size: 12 }),
+      apiService.getCategories()
+    ])
+      .then(([prodRes, catRes]) => {
+        if (prodRes.data?.content) setProductsList(prodRes.data.content);
+        if (catRes.data) setCategoriesList(catRes.data);
+      })
+      .catch(err => {
+        console.error("Error loading home page data:", err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   const benefits = [
     {
@@ -46,8 +65,8 @@ export const Home = () => {
   ];
 
   const filteredProducts = selectedFilter === 'all'
-    ? products.slice(0, 8)
-    : products.filter(p => p.category === selectedFilter).slice(0, 8);
+    ? productsList.slice(0, 8)
+    : productsList.filter(p => p.category === selectedFilter || p.categorySlug === selectedFilter).slice(0, 8);
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -65,7 +84,6 @@ export const Home = () => {
             title="Nə üçün ZEBR Market-i seçməlisiniz?"
             subtitle="Rəqəmsal alış-verişinizi rahat, təhlükəsiz və anında həyata keçirməyiniz üçün ən müasir standartları tətbiq edirik."
             centered
-            
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -109,11 +127,17 @@ export const Home = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categories.map((cat, idx) => (
-              <CategoryCard key={cat.id} category={cat} index={idx} />
-            ))}
-          </div>
+          {categoriesList.length === 0 && !loading ? (
+            <div className="p-8 text-center bg-white dark:bg-[#14171D] rounded-3xl border border-slate-200 dark:border-slate-800 text-slate-500 text-xs">
+              Hələlik heç bir kateqoriya mövcud deyil. Admin Paneldən kateqoriya əlavə edə bilərsiniz.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {categoriesList.map((cat, idx) => (
+                <CategoryCard key={cat.id} category={cat} index={idx} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -139,51 +163,40 @@ export const Home = () => {
               >
                 Hamısı
               </button>
-              <button
-                onClick={() => setSelectedFilter('streaming')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                  selectedFilter === 'streaming'
-                    ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                Streaming
-              </button>
-              <button
-                onClick={() => setSelectedFilter('suniki-intellekt')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                  selectedFilter === 'suniki-intellekt'
-                    ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                AI Alətləri
-              </button>
-              <button
-                onClick={() => setSelectedFilter('oyun')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                  selectedFilter === 'oyun'
-                    ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                Oyun
-              </button>
+              {categoriesList.slice(0, 4).map(cat => (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedFilter(cat.slug)}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                    selectedFilter === cat.slug
+                      ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
+                      : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  {cat.name}
+                </button>
+              ))}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {filteredProducts.length === 0 && !loading ? (
+            <div className="p-12 text-center bg-white dark:bg-[#14171D] rounded-3xl border border-slate-200 dark:border-slate-800 text-slate-500 text-xs">
+              Məhsul tapılmadı. Admin paneldən rəqəmsal məhsul daxil edə bilərsiniz.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
 
           <div className="mt-14 text-center">
             <Link
               to="/products"
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-white dark:text-slate-900 text-xs font-bold transition-all shadow-md"
             >
-              <span>Bütün Məhsulları İncələyin ({products.length})</span>
+              <span>Bütün Məhsulları İncələyin ({productsList.length})</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

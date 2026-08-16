@@ -1,15 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { categories } from '../data/categories';
-import { products } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
+import { apiService } from '../services/api';
 
 export const Category = () => {
   const { slug } = useParams();
-  
-  const category = categories.find((c) => c.slug === slug || c.id === slug) || categories[0];
-  const categoryProducts = products.filter((p) => p.category === category.id || p.category === category.slug);
+  const [category, setCategory] = useState(null);
+  const [categoryProducts, setCategoryProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    // Fetch Category by slug or id
+    const fetchCategory = apiService.getCategoryBySlug(slug)
+      .catch(() => apiService.getCategoryById(slug))
+      .catch(() => null);
+
+    const fetchProducts = apiService.getProducts({ size: 100 })
+      .then(res => res.data?.content || [])
+      .catch(() => []);
+
+    Promise.all([fetchCategory, fetchProducts])
+      .then(([catRes, allProds]) => {
+        const cat = catRes?.data || null;
+        setCategory(cat);
+
+        if (cat) {
+          const prods = allProds.filter(p => 
+            p.category === cat.slug || 
+            p.category === cat.id || 
+            p.categoryId === cat.id ||
+            p.categoryName?.toLowerCase() === cat.name?.toLowerCase()
+          );
+          setCategoryProducts(prods);
+        } else {
+          setCategoryProducts([]);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center text-slate-500 text-xs">
+        Kateqoriya məlumatları yüklənir...
+      </div>
+    );
+  }
+
+  const categoryName = category ? category.name : slug;
+  const categoryDescription = category ? category.description : 'Rəqəmsal abunəliklər və paketlər.';
 
   return (
     <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -27,10 +70,10 @@ export const Category = () => {
           {categoryProducts.length} Məhsul Mövcuddur
         </span>
         <h1 className="text-3xl sm:text-5xl font-black mb-4">
-          {category.name}
+          {categoryName}
         </h1>
         <p className="text-slate-600 dark:text-slate-400 text-sm max-w-2xl leading-relaxed">
-          {category.description}
+          {categoryDescription}
         </p>
       </div>
 

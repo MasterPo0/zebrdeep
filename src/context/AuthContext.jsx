@@ -1,58 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { apiService } from '../services/api';
 
 const AuthContext = createContext();
-
-const initialMockUser = {
-  id: "usr_10293",
-  name: "Elvin Məmmədov",
-  email: "elvin@zebr.az",
-  phone: "+994 50 123 45 67",
-  role: "ROLE_USER", // 'ROLE_USER' or 'ROLE_ADMIN'
-  roles: ["ROLE_USER"],
-  avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop",
-  zebrCoins: 450,
-  tier: "Qızıl Zebra Statusu",
-  cashbackRate: "5%",
-  orders: [
-    {
-      id: "ZEBR-849201",
-      date: "2026-08-01",
-      productName: "Netflix Premium 4K",
-      duration: "1 il",
-      price: 129.99,
-      status: "Çatdırıldı",
-      activationKey: "NFLX-AZ-8849-2026-PRO",
-      coinsEarned: 65
-    },
-    {
-      id: "ZEBR-629104",
-      date: "2026-07-15",
-      productName: "ChatGPT Plus (GPT-4o)",
-      duration: "1 ay",
-      price: 29.99,
-      status: "Aktiv",
-      activationKey: "GPT4-KEY-ZEBR-9930-PLUS",
-      coinsEarned: 15
-    }
-  ],
-  subscriptions: [
-    {
-      id: "sub_1",
-      name: "ChatGPT Plus (GPT-4o)",
-      plan: "Aylıq Abunəlik",
-      expiryDate: "2026-09-15",
-      daysLeft: 34,
-      accountInfo: "elvin@zebr.az (Şəxsi hesab)",
-      status: "Aktiv",
-      autoRenew: true
-    }
-  ]
-};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('zebr_user');
-    return saved ? JSON.parse(saved) : initialMockUser;
+    return saved ? JSON.parse(saved) : null;
   });
 
   useEffect(() => {
@@ -64,14 +18,47 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
+  // Load latest profile from API if accessToken exists
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      apiService.getMe()
+        .then(res => {
+          if (res.data) {
+            const fetched = res.data;
+            const roles = fetched.roles || [fetched.role || 'ROLE_USER'];
+            const mainRole = roles.includes('ROLE_ADMIN') ? 'ROLE_ADMIN' : (fetched.role || 'ROLE_USER');
+            setUser(prev => ({
+              ...prev,
+              ...fetched,
+              role: mainRole,
+              roles: roles,
+              name: fetched.fullName || `${fetched.firstName || ''} ${fetched.lastName || ''}`.trim() || fetched.email
+            }));
+          }
+        })
+        .catch(() => {});
+    }
+  }, []);
+
   const login = (userData) => {
-    const role = userData.role || (userData.email?.includes('admin') ? 'ROLE_ADMIN' : 'ROLE_USER');
-    const fullUser = { 
-      ...initialMockUser, 
-      ...userData,
-      role,
-      roles: [role]
+    const roles = userData.roles || (userData.role ? [userData.role] : (userData.email?.includes('admin') ? ['ROLE_ADMIN', 'ROLE_USER'] : ['ROLE_USER']));
+    const mainRole = roles.includes('ROLE_ADMIN') ? 'ROLE_ADMIN' : 'ROLE_USER';
+
+    const fullUser = {
+      id: userData.id || Date.now(),
+      email: userData.email,
+      name: userData.fullName || `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || userData.email,
+      firstName: userData.firstName || '',
+      lastName: userData.lastName || '',
+      role: mainRole,
+      roles: roles,
+      avatar: userData.avatarUrl || null,
+      zebrCoins: userData.zebrCoins || 0,
+      orders: userData.orders || [],
+      subscriptions: userData.subscriptions || []
     };
+
     if (userData.accessToken) {
       localStorage.setItem('accessToken', userData.accessToken);
     }
@@ -81,15 +68,17 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('zebr_user');
   };
 
   const toggleRole = () => {
     if (!user) return;
     const newRole = user.role === 'ROLE_ADMIN' ? 'ROLE_USER' : 'ROLE_ADMIN';
+    const newRoles = newRole === 'ROLE_ADMIN' ? ['ROLE_ADMIN', 'ROLE_USER'] : ['ROLE_USER'];
     setUser(prev => ({
       ...prev,
       role: newRole,
-      roles: [newRole]
+      roles: newRoles
     }));
   };
 
@@ -97,7 +86,7 @@ export const AuthProvider = ({ children }) => {
     if (!user) return;
     setUser(prev => ({
       ...prev,
-      zebrCoins: Math.max(0, prev.zebrCoins - coinsAmount)
+      zebrCoins: Math.max(0, (prev.zebrCoins || 0) - coinsAmount)
     }));
   };
 
@@ -105,7 +94,7 @@ export const AuthProvider = ({ children }) => {
     if (!user) return;
     setUser(prev => ({
       ...prev,
-      zebrCoins: prev.zebrCoins + coinsAmount
+      zebrCoins: (prev.zebrCoins || 0) + coinsAmount
     }));
   };
 
@@ -119,32 +108,17 @@ export const AuthProvider = ({ children }) => {
   const addOrder = (orderData) => {
     if (!user) return;
     const newOrder = {
-      id: orderData.orderId,
+      id: orderData.orderId || `ORD-${Date.now()}`,
       date: new Date().toISOString().split('T')[0],
       productName: orderData.items?.map(i => i.product.name).join(', ') || 'Rəqəmsal Məhsul',
       duration: orderData.items?.[0]?.selectedDuration || '1 ay',
       price: orderData.total,
-      status: 'Aktiv',
-      activationKey: `ZEBR-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}-KEY`,
-      coinsEarned: Math.floor(orderData.total * 5)
+      status: 'Aktiv'
     };
-
-    const newSubscriptions = orderData.items?.map((item, idx) => ({
-      id: `sub_${Date.now()}_${idx}`,
-      name: item.product.name,
-      plan: `${item.selectedDuration} Abunəlik`,
-      expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      daysLeft: 30,
-      accountInfo: `${orderData.customer?.email || user.email} (Aktivasiya Kodu Təsdiqləndi)`,
-      status: 'Aktiv',
-      autoRenew: true
-    })) || [];
 
     setUser(prev => ({
       ...prev,
-      zebrCoins: prev.zebrCoins + Math.floor(orderData.total * 5),
-      orders: [newOrder, ...prev.orders],
-      subscriptions: [...newSubscriptions, ...prev.subscriptions]
+      orders: [newOrder, ...(prev.orders || [])]
     }));
   };
 

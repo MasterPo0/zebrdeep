@@ -1,34 +1,59 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Search, SlidersHorizontal, X, ArrowUpDown } from 'lucide-react';
 import { ProductCard } from '../components/ProductCard';
-import { products } from '../data/products';
-import { categories } from '../data/categories';
+import { apiService } from '../services/api';
 import { zebrChillBeanbag } from '../assets/mascot';
 
 export const Products = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('recommended');
-  const [maxPrice, setMaxPrice] = useState(300);
+  const [maxPrice, setMaxPrice] = useState(500);
+
+  const [productsList, setProductsList] = useState([]);
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      apiService.getProducts({ size: 100 }),
+      apiService.getCategories()
+    ])
+      .then(([prodRes, catRes]) => {
+        if (prodRes.data?.content) setProductsList(prodRes.data.content);
+        if (catRes.data) setCategoriesList(catRes.data);
+      })
+      .catch(err => {
+        console.error("Error loading products list:", err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   const filteredProducts = useMemo(() => {
-    return products.filter((p) => {
-      const matchedCat = categories.find(c => c.slug === selectedCategory || c.id === selectedCategory);
-      const matchesCategory = selectedCategory === 'all' || p.category === selectedCategory || (matchedCat && (p.category === matchedCat.id || p.category === matchedCat.slug));
-      const matchesSearch =
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.shortDescription.toLowerCase().includes(searchTerm.toLowerCase());
+    return productsList.filter((p) => {
+      const matchedCat = categoriesList.find(c => c.slug === selectedCategory || c.id === selectedCategory);
+      const matchesCategory = selectedCategory === 'all' || 
+        p.category === selectedCategory || 
+        p.categoryId === selectedCategory ||
+        (matchedCat && (p.category === matchedCat.id || p.category === matchedCat.slug || p.categoryId === matchedCat.id));
+      
+      const nameMatch = (p.name || p.title || '').toLowerCase().includes(searchTerm.toLowerCase());
+      const descMatch = (p.shortDescription || p.description || '').toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = nameMatch || descMatch;
+
       const matchesPrice = p.price <= maxPrice;
 
       return matchesCategory && matchesSearch && matchesPrice;
     }).sort((a, b) => {
       if (sortBy === 'price-asc') return a.price - b.price;
       if (sortBy === 'price-desc') return b.price - a.price;
-      if (sortBy === 'rating') return b.rating - a.rating;
-      if (sortBy === 'newest') return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
-      return b.ratingCount - a.ratingCount;
+      if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
+      if (sortBy === 'newest') return b.id - a.id;
+      return (b.ratingCount || 0) - (a.ratingCount || 0);
     });
-  }, [searchTerm, selectedCategory, sortBy, maxPrice]);
+  }, [productsList, categoriesList, searchTerm, selectedCategory, sortBy, maxPrice]);
 
   return (
     <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -87,7 +112,6 @@ export const Products = () => {
               >
                 <option value="recommended" className="bg-white dark:bg-slate-900">Tövsiyə olunanlar</option>
                 <option value="newest" className="bg-white dark:bg-slate-900">Ən yenilər</option>
-                <option value="popular" className="bg-white dark:bg-slate-900">Ən çox satılanlar</option>
                 <option value="price-asc" className="bg-white dark:bg-slate-900">Qiymət: Aşağıdan yuxarı</option>
                 <option value="price-desc" className="bg-white dark:bg-slate-900">Qiymət: Yuxarıdan aşağı</option>
                 <option value="rating" className="bg-white dark:bg-slate-900">Yüksək reytinq</option>
@@ -106,7 +130,7 @@ export const Products = () => {
               <input
                 type="range"
                 min="10"
-                max="300"
+                max="500"
                 step="5"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(Number(e.target.value))}
@@ -127,9 +151,9 @@ export const Products = () => {
                 : 'bg-slate-50 dark:bg-slate-900 text-slate-500 border border-slate-200 dark:border-slate-800'
             }`}
           >
-            Bütün Kateqoriyalar ({products.length})
+            Bütün Kateqoriyalar ({productsList.length})
           </button>
-          {categories.map((cat) => (
+          {categoriesList.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.slug)}
@@ -149,7 +173,9 @@ export const Products = () => {
         <span>Tapılan məhsul sayı: <strong>{filteredProducts.length}</strong></span>
       </div>
 
-      {filteredProducts.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-20 text-slate-500 text-xs">Məhsullar yüklənir...</div>
+      ) : filteredProducts.length === 0 ? (
         <div className="text-center py-20 bg-white dark:bg-[#14171D] border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm">
           <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400 mx-auto mb-4">
             <Search className="w-8 h-8" />
@@ -162,7 +188,7 @@ export const Products = () => {
             onClick={() => {
               setSearchTerm('');
               setSelectedCategory('all');
-              setMaxPrice(300);
+              setMaxPrice(500);
             }}
             className="px-6 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 text-xs font-bold"
           >
