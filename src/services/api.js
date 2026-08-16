@@ -73,12 +73,15 @@ async function request(endpoint, options = {}) {
     ...options.headers
   };
 
+  const mode = options.mode || 'cors';
+
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
+    mode,
     headers
   });
 
-  if (response.status === 204) {
+  if (response.type === 'opaque' || response.status === 0 || response.status === 204) {
     return { success: true, data: null };
   }
 
