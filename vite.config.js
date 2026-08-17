@@ -8,4 +8,13 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://zebr-market-backend-production.up.railway.app',
+        changeOrigin: true,
+        secure: false
+      }
+    }
+  }
 })

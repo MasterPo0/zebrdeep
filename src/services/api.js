@@ -4,7 +4,7 @@
  * OpenAPI/Swagger Doc: https://zebr-market-backend-production.up.railway.app/api/v1/swagger-ui/index.html#/
  */
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://zebr-market-backend-production.up.railway.app/api/v1';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api/v1' : 'https://zebr-market-backend-production.up.railway.app/api/v1');
 
 /**
  * Normalizes product object returned from Spring Boot backend
