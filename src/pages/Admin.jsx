@@ -17,9 +17,6 @@ import {
   Coins, 
   Search, 
   Sparkles,
-  ArrowRight,
-  Lock,
-  Mail,
   RefreshCw,
   SlidersHorizontal,
   ExternalLink,
@@ -37,17 +34,11 @@ import { formatCurrency } from '../utils/formatCurrency';
 import { zebrLaptop, zebrThumbsup } from '../assets/mascot';
 
 export const Admin = () => {
-  const { user, login, isAdmin, toggleRole } = useAuth();
+  const { user, isAdmin, toggleRole } = useAuth();
   const navigate = useNavigate();
 
   // Navigation Tab ('overview', 'products', 'categories', 'orders', 'users', 'files')
   const [activeTab, setActiveTab] = useState('overview');
-
-  // Admin Quick Login State
-  const [adminEmail, setAdminEmail] = useState('admin@zebr.az');
-  const [adminPassword, setAdminPassword] = useState('admin123');
-  const [loginLoading, setLoginLoading] = useState(false);
-  const [loginError, setLoginError] = useState('');
 
   // Data States
   const [productsList, setProductsList] = useState([]);
@@ -139,53 +130,6 @@ export const Admin = () => {
       loadAdminData();
     }
   }, [isAdmin]);
-
-  // Handle Admin Quick Login
-  const handleAdminLogin = async (e) => {
-    e.preventDefault();
-    setLoginLoading(true);
-    setLoginError('');
-    try {
-      const res = await apiService.login({ email: adminEmail, password: adminPassword });
-      const userObj = res.data?.user || res.data || {};
-      login({
-        ...userObj,
-        role: 'ROLE_ADMIN',
-        roles: ['ROLE_ADMIN', 'ROLE_USER'],
-        accessToken: res.data?.accessToken
-      });
-      showNotice("Admin panelinə giriş edildi!", "success");
-    } catch (err) {
-      // If user account does not exist on backend yet, auto-register seamless admin credentials
-      try {
-        const regRes = await apiService.register({
-          email: adminEmail,
-          password: adminPassword,
-          firstName: 'ZEBR',
-          lastName: 'Admin'
-        });
-        login({
-          ...regRes.data,
-          role: 'ROLE_ADMIN',
-          roles: ['ROLE_ADMIN', 'ROLE_USER'],
-          accessToken: regRes.data?.accessToken
-        });
-        showNotice("Admin hesabı yaradıldı və giriş edildi!", "success");
-      } catch (regErr) {
-        // Direct local login activation for admin testing
-        login({
-          id: 2,
-          email: adminEmail,
-          name: 'ZEBR Admin',
-          role: 'ROLE_ADMIN',
-          roles: ['ROLE_ADMIN', 'ROLE_USER']
-        });
-        showNotice("Admin panel rejimi aktivləşdirildi!", "success");
-      }
-    } finally {
-      setLoginLoading(false);
-    }
-  };
 
   // Open Modal for Creating New Product
   const handleOpenNewProductModal = () => {
@@ -435,83 +379,38 @@ export const Admin = () => {
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md bg-white dark:bg-[#14171D] border border-slate-200 dark:border-slate-800 p-8 sm:p-10 rounded-3xl shadow-2xl space-y-6 text-center"
         >
-          <div className="space-y-2">
+          <div className="space-y-3">
             <img 
               src={zebrLaptop} 
               alt="ZEBR Admin Laptop Mascot" 
               className="w-28 h-32 object-contain mx-auto filter drop-shadow-lg hover:scale-105 transition-transform" 
             />
-            <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-600 dark:text-purple-400 text-xs font-mono font-bold">
-              SPRING BOOT REST API ADMIN
+            <span className="px-3 py-1 rounded-full bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-mono font-bold">
+              GİRİŞ MƏHDUDLAŞDIRILIB (403)
             </span>
-            <h1 className="text-2xl font-black">İdarəçi Girişi</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs">
-              Məhsullar, kateqoriyalar, sifarişlər və istifadəçi rollarını idarə etmək üçün sistemə daxil olun.
+            <h1 className="text-2xl font-black">İdarəçi Girişi Tələb Olunur</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">
+              Bu bölməyə daxil olmaq yalnız backend sistemində admin icazəsi (<code className="text-purple-500 font-bold">ROLE_ADMIN</code>) olan hesablar üçün nəzərdə tutulub.
             </p>
           </div>
 
-          {loginError && (
-            <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs font-semibold">
-              {loginError}
-            </div>
-          )}
-
-          <form onSubmit={handleAdminLogin} className="space-y-4 text-xs text-left">
-            <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1.5">
-                Admin E-poçt *
-              </label>
-              <div className="relative">
-                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="email"
-                  required
-                  value={adminEmail}
-                  onChange={(e) => setAdminEmail(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-3 text-slate-900 dark:text-white"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1.5">
-                Admin Şifrə *
-              </label>
-              <div className="relative">
-                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="password"
-                  required
-                  value={adminPassword}
-                  onChange={(e) => setAdminPassword(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-3 text-slate-900 dark:text-white"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loginLoading}
-              className="w-full py-3.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-md flex items-center justify-center gap-2 active:scale-95 transition-all mt-4"
-            >
-              <span>{loginLoading ? 'Giriş edilir...' : 'Admin Panelə Giriş'}</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </form>
-
-          {/* Role Switcher Button for Testing */}
-          {user && (
-            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
-              <p className="text-[11px] text-slate-400">Və ya cari hesabı Admin rejiminə keçirin:</p>
+          <div className="pt-2 space-y-3">
+            {!user ? (
               <button
-                onClick={toggleRole}
-                className="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold flex items-center justify-center gap-2"
+                onClick={() => navigate('/login')}
+                className="w-full py-3.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-md active:scale-95 transition-all"
               >
-                <ShieldCheck className="w-4 h-4 text-amber-500" />
-                <span>Admin Rejimini Aktiv Et (`ROLE_ADMIN`)</span>
+                Giriş Səhifəsinə Keç
               </button>
-            </div>
-          )}
+            ) : (
+              <button
+                onClick={() => navigate('/')}
+                className="w-full py-3.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs shadow-md active:scale-95 transition-all"
+              >
+                Əsas Səhifəyə Qayıt
+              </button>
+            )}
+          </div>
         </motion.div>
       </div>
     );

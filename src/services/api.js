@@ -1,15 +1,6 @@
-/**
- * ZEBR Market - Spring Boot REST API Service
- * Backend API Base URL: https://zebr-market-backend-production.up.railway.app/api/v1
- * OpenAPI/Swagger Doc: https://zebr-market-backend-production.up.railway.app/api/v1/swagger-ui/index.html#/
- */
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api/v1' : 'https://zebr-market-backend-production.up.railway.app/api/v1');
 
-/**
- * Normalizes product object returned from Spring Boot backend
- * ensuring seamless compatibility with all frontend UI components.
- */
 export function normalizeProduct(prod) {
   if (!prod) return prod;
 
